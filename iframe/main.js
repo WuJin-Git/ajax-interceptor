@@ -33,7 +33,7 @@ export default class Main extends Component {
           }
           return false;
         });
-        
+
         if (!exits) {
           interceptedRequests[match].push({url, num: 1});
         }
@@ -150,18 +150,32 @@ export default class Main extends Component {
   handleSwitchChange = () => {
     window.setting.ajaxInterceptor_switchOn = !window.setting.ajaxInterceptor_switchOn;
     this.set('ajaxInterceptor_switchOn', window.setting.ajaxInterceptor_switchOn);
+    this.forceUpdate();
+  }
 
+  handleSwitchShowH5ChannelIdOnChange = () => {
+    window.setting.ajaxInterceptor_switchShowH5ChannelIdOn = !window.setting.ajaxInterceptor_switchShowH5ChannelIdOn;
+    this.set('ajaxInterceptor_switchShowH5ChannelIdOn', window.setting.ajaxInterceptor_switchShowH5ChannelIdOn);
     this.forceUpdate();
   }
 
   render() {
     return (
       <div className="main">
-        <Switch
-          style={{zIndex: 10}}
-          defaultChecked={window.setting.ajaxInterceptor_switchOn}
-          onChange={this.handleSwitchChange}
-        />
+        <div className="all-switch" style={{width: "100%"}}>
+          <div style={{float :"left"}}>全局开关</div>
+          <Switch
+            style={{zIndex: 10,marginLeft :"450px"}}
+            defaultChecked={window.setting.ajaxInterceptor_switchOn}
+            onChange={this.handleSwitchChange}
+          />
+          <div style={{float :"left"}}>H5显示工号ID</div>
+          <Switch
+              style={{zIndex: 10,marginLeft :"417px"}}
+              defaultChecked={window.setting.ajaxInterceptor_switchShowH5ChannelIdOn}
+              onChange={this.handleSwitchShowH5ChannelIdOnChange}
+          />
+        </div>
         <div className={window.setting.ajaxInterceptor_switchOn ? 'settingBody' : 'settingBody settingBody-hidden'}>
           {window.setting.ajaxInterceptor_rules && window.setting.ajaxInterceptor_rules.length > 0 ? (
             <div ref={ref => this.collapseWrapperRef = ref}>
@@ -176,9 +190,9 @@ export default class Main extends Component {
                     header={
                       <div className="panel-header" onClick={e => e.stopPropagation()}>
                         <Input.Group compact style={{width: '78%'}}>
-                          <Input 
+                          <Input
                             placeholder="name"
-                            style={{width: '21%'}}
+                            style={{width: '20%'}}
                             defaultValue={label}
                             onChange={e => this.handleLabelChange(e, i)}/>
                           <Select defaultValue={filterType} style={{width: '30%'}} onChange={e => this.handleFilterTypeChange(e, i)}>
@@ -187,11 +201,24 @@ export default class Main extends Component {
                           </Select>
                           <Input
                             placeholder={filterType === 'normal' ? 'eg: abc/get' : 'eg: abc.*'}
-                            style={{width: '49%'}}
+                            style={{width: '50%'}}
                             defaultValue={match}
                             // onClick={e => e.stopPropagation()}
                             onChange={e => this.handleMatchChange(e, i)}
                           />
+       {/*                   <Input
+                              placeholder="字段过滤"
+                              style={{width: '40%'}}
+                              defaultValue={label}
+                              onChange={e => this.handleLabelChange(e, i)}/>
+                          <Select defaultValue={filterType} style={{width: '30%'}} onChange={e => this.handleFilterTypeChange(e, i)}>
+                            <Option value="==">==</Option>
+                          </Select>
+                          <Input
+                              placeholder="过滤值"
+                              style={{width: '30%'}}
+                              defaultValue={label}
+                              onChange={e => this.handleLabelChange(e, i)}/>*/}
                         </Input.Group>
                         <Switch
                           size="small"
@@ -201,7 +228,7 @@ export default class Main extends Component {
                         <Button
                           style={{marginRight: '16px'}}
                           type="primary"
-                          shape="circle" 
+                          shape="circle"
                           icon="minus"
                           size="small"
                           onClick={e => this.handleClickRemove(e, i)}
@@ -261,14 +288,14 @@ export default class Main extends Component {
                     )}
                   </Panel>
                 ))}
-              </Collapse> 
+              </Collapse>
             </div>
           ): <div />}
           <div ref={ref => this.addBtnRef = ref} className="wrapper-btn-add">
             <Button
               className={`btn-add ${window.setting.ajaxInterceptor_switchOn ? '' : ' btn-add-hidden'}`}
               type="primary"
-              shape="circle" 
+              shape="circle"
               icon="plus"
               onClick={this.handleClickAdd}
               disabled={!window.setting.ajaxInterceptor_switchOn}

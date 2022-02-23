@@ -5,11 +5,12 @@ import Main from './Main';
 
 const DEFAULT_SETTING = {
   ajaxInterceptor_switchOn: false,
+  ajaxInterceptor_switchShowH5ChannelIdOn: false,
   ajaxInterceptor_rules: [],
 }
 
 if (chrome.storage) {
-  chrome.storage.local.get(['ajaxInterceptor_switchOn', 'ajaxInterceptor_rules'], (result) => {
+  chrome.storage.local.get(['ajaxInterceptor_switchOn','ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules'], (result) => {
     // if (result.ajaxInterceptor_switchOn) {
     //   this.set('ajaxInterceptor_switchOn', result.ajaxInterceptor_switchOn, false);
     // }

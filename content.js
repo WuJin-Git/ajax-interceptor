@@ -15,12 +15,15 @@ script.setAttribute('src', chrome.extension.getURL('pageScripts/main.js'));
 document.documentElement.appendChild(script);
 
 script.addEventListener('load', () => {
-  chrome.storage.local.get(['ajaxInterceptor_switchOn', 'ajaxInterceptor_rules'], (result) => {
+  chrome.storage.local.get(['ajaxInterceptor_switchOn','ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules'], (result) => {
     if (result.hasOwnProperty('ajaxInterceptor_switchOn')) {
       postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchOn', value: result.ajaxInterceptor_switchOn});
     }
     if (result.ajaxInterceptor_rules) {
       postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_rules', value: result.ajaxInterceptor_rules});
+    }
+    if (result.hasOwnProperty('ajaxInterceptor_switchShowH5ChannelIdOn')) {
+      postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchShowH5ChannelIdOn', value: result.ajaxInterceptor_switchShowH5ChannelIdOn});
     }
   });
 });
@@ -37,7 +40,7 @@ if (window.self === window.top) {
       iframe = document.createElement('iframe'); 
       iframe.className = "api-interceptor";
       iframe.style.setProperty('height', '100%', 'important');
-      iframe.style.setProperty('width', '450px', 'important');
+      iframe.style.setProperty('width', '600px', 'important');
       iframe.style.setProperty('min-width', '1px', 'important');
       iframe.style.setProperty('position', 'fixed', 'important');
       iframe.style.setProperty('top', '0', 'important');
@@ -45,7 +48,7 @@ if (window.self === window.top) {
       iframe.style.setProperty('left', 'auto', 'important');
       iframe.style.setProperty('bottom', 'auto', 'important');
       iframe.style.setProperty('z-index', '9999999999999', 'important');
-      iframe.style.setProperty('transform', 'translateX(470px)', 'important');
+      iframe.style.setProperty('transform', 'translateX(620px)', 'important');
       iframe.style.setProperty('transition', 'all .4s', 'important');
       iframe.style.setProperty('box-shadow', '0 0 15px 2px rgba(0,0,0,0.12)', 'important');
       iframe.frameBorder = "none"; 
@@ -56,7 +59,7 @@ if (window.self === window.top) {
       chrome.runtime.onMessage.addListener((msg, sender) => {
         if (msg == 'toggle') {
           show = !show;
-          iframe.style.setProperty('transform', show ? 'translateX(0)' : 'translateX(470px)', 'important');
+          iframe.style.setProperty('transform', show ? 'translateX(0)' : 'translateX(620px)', 'important');
         }
 
         return true;
