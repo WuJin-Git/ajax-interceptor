@@ -1,30 +1,57 @@
+function extracted(pageScriptShowEventDispatched) {
+    //显示H5报价工号ID
+    let showH5ChannelIdOn = ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchShowH5ChannelIdOn
+    let ShowH5Company_rules = ajax_interceptor_qoweifjqon.settings.ShowH5Company_rules
+    if (!pageScriptShowEventDispatched && this.responseURL.indexOf('/icar/channel/queryProxyCompany') > -1) {
+        let parse = JSON.parse(this.responseText);
+        //显示工号ID
+        if (showH5ChannelIdOn) {
+            let deal_list = []
+            parse.data.list.forEach(
+                function (item) {
+                    item.customName = item.channelId + '--' + item.customName
+                    deal_list.push(item)
+                })
+            parse.data.list = deal_list
+            this.responseText = JSON.stringify(parse)
+            this.response = JSON.stringify(parse)
+        }
+        //过滤保司ID
+        if (ShowH5Company_rules.length > 0) {
+            let deal_list = []
+            parse.data.list.forEach(
+                function (item) {
+                    for (const r in ShowH5Company_rules) {
+                        if (item.id.toString() === ShowH5Company_rules[r].toString()) {
+                            deal_list.push(item)
+                        }
+                    }
+                })
+            parse.data.list = deal_list
+            this.responseText = JSON.stringify(parse)
+            this.response = JSON.stringify(parse)
+
+        }
+        return !pageScriptShowEventDispatched
+    }
+}
+
 // 命名空间
 let ajax_interceptor_qoweifjqon = {
     settings: {
         ajaxInterceptor_switchOn: false,
         ajaxInterceptor_switchShowH5ChannelIdOn: false,
         ajaxInterceptor_rules: [],
+        ShowH5Company_rules: [],
+
     },
     originalXHR: window.XMLHttpRequest,
     myXHR: function () {
         let pageScriptEventDispatched = false;
         let pageScriptShowEventDispatched = false;
         const modifyResponse = () => {
-            let showH5ChannelIdOn = ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchShowH5ChannelIdOn
-            if (!pageScriptShowEventDispatched && showH5ChannelIdOn && this.responseURL.indexOf('/icar/channel/queryProxyCompany') > -1) {
-                let  deal_list = []
-                let parse = JSON.parse(this.responseText);
-                parse.data.list.forEach(
-                    function (item) {
-                        item.customName = item.channelId + '--' + item.customName
-                        deal_list.push(item)
-                    })
-                parse.data.list = deal_list
-                this.responseText = JSON.stringify(parse)
-                this.response = JSON.stringify(parse)
-                pageScriptShowEventDispatched = !pageScriptShowEventDispatched
-            }
-
+            // H5操作 1 显示工号 2 过滤保司
+            pageScriptShowEventDispatched = extracted.call(this, pageScriptShowEventDispatched);
             ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_rules.forEach(({
                                                                                     filterType = 'normal',
                                                                                     switchOn = true,

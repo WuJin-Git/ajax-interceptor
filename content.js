@@ -15,7 +15,7 @@ script.setAttribute('src', chrome.extension.getURL('pageScripts/main.js'));
 document.documentElement.appendChild(script);
 
 script.addEventListener('load', () => {
-  chrome.storage.local.get(['ajaxInterceptor_switchOn','ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules'], (result) => {
+  chrome.storage.local.get(['ajaxInterceptor_switchOn','ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules','ShowH5Company_rules'], (result) => {
     if (result.hasOwnProperty('ajaxInterceptor_switchOn')) {
       postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchOn', value: result.ajaxInterceptor_switchOn});
     }
@@ -24,6 +24,9 @@ script.addEventListener('load', () => {
     }
     if (result.hasOwnProperty('ajaxInterceptor_switchShowH5ChannelIdOn')) {
       postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchShowH5ChannelIdOn', value: result.ajaxInterceptor_switchShowH5ChannelIdOn});
+    }
+    if (result.ShowH5Company_rules) {
+      postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ShowH5Company_rules', value: result.ShowH5Company_rules});
     }
   });
 });
@@ -34,10 +37,9 @@ let iframeLoaded = false;
 
 // 只在最顶层页面嵌入iframe
 if (window.self === window.top) {
-
   document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
-      iframe = document.createElement('iframe'); 
+      iframe = document.createElement('iframe');
       iframe.className = "api-interceptor";
       iframe.style.setProperty('height', '100%', 'important');
       iframe.style.setProperty('width', '600px', 'important');
@@ -51,7 +53,7 @@ if (window.self === window.top) {
       iframe.style.setProperty('transform', 'translateX(620px)', 'important');
       iframe.style.setProperty('transition', 'all .4s', 'important');
       iframe.style.setProperty('box-shadow', '0 0 15px 2px rgba(0,0,0,0.12)', 'important');
-      iframe.frameBorder = "none"; 
+      iframe.frameBorder = "none";
       iframe.src = chrome.extension.getURL("iframe/index.html")
       document.body.appendChild(iframe);
       let show = false;
