@@ -268,14 +268,14 @@ export default class Main extends Component {
     }
 
     handleGetCompanyDate = () => {
-        if(window.setting.parent_href.indexOf('ybinsure.com/spa')>-1){
+        if(window.setting.parent_href.indexOf('ybinsure.com/spa')>-1 && window.setting.parent_href.startsWith("http://")){
             this.getCompanyDate(companyData => this.setState({companyData: companyData}))
         }
     };
 
 
     handleSearch = (value) => {
-        if (value && window.setting.parent_href.indexOf('ybinsure.com/spa')>-1) {
+        if (value && window.setting.parent_href.indexOf('ybinsure.com/spa')>-1 && window.setting.parent_href.startsWith("http://")) {
             this.fetch(value, data => this.setState({data}));
         } else {
             this.setState({data: []});
