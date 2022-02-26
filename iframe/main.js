@@ -361,7 +361,7 @@ export default class Main extends Component {
                         ))}
                     </Select>
                     <Switch
-                        style={{zIndex: 10,marginTop: "20px"}}
+                        style={{zIndex: 10}}
                         defaultChecked={window.setting.ajaxInterceptor_ShowH5Company_rules_on}
                         onChange={this.handleAjaxInterceptorShowH5CompanyRulesOnChange}
                     />
