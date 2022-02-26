@@ -17,7 +17,7 @@ function extracted(pageScriptShowEventDispatched) {
             this.response = JSON.stringify(parse)
         }
         //过滤保司ID
-        if (ShowH5Company_rules.length > 0) {
+        if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_ShowH5Company_rules_on && ShowH5Company_rules.length > 0) {
             let deal_list = []
             parse.data.list.forEach(
                 function (item) {
@@ -43,7 +43,8 @@ let ajax_interceptor_qoweifjqon = {
         ajaxInterceptor_switchShowH5ChannelIdOn: false,
         ajaxInterceptor_rules: [],
         ShowH5Company_rules: [],
-
+        ajaxInterceptor_ShowH5Company_rules_on: false,
+        parent_href: false,
     },
     originalXHR: window.XMLHttpRequest,
     myXHR: function () {
@@ -202,7 +203,6 @@ let ajax_interceptor_qoweifjqon = {
 
 window.addEventListener("message", function (event) {
     const data = event.data;
-
     if (data.type === 'ajaxInterceptor' && data.to === 'pageScript') {
         ajax_interceptor_qoweifjqon.settings[data.key] = data.value;
     }

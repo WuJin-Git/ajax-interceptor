@@ -9,21 +9,13 @@ const DEFAULT_SETTING = {
     ajaxInterceptor_switchShowH5ChannelIdOn: false,
     ajaxInterceptor_rules: [],
     ShowH5Company_rules: [],
+    ajaxInterceptor_ShowH5Company_rules_on: false,
+    parent_href: 'aaa',
 }
-
-request({
-    url: '/api/channel/select_channel_company_list',
-    method: 'get',
-}).then(function (res) {
-    if (res['data'] !== undefined && res['data'] != null) {
-        localStorage.setItem("companyDataW", JSON.stringify(res['data']))
-    }
-})
 
 
 if (chrome.storage) {
-    const fields = ['ajaxInterceptor_switchOn', 'ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules', 'ShowH5Company_rules']
-    debugger
+    const fields = ['ajaxInterceptor_switchOn','parent_href', 'ajaxInterceptor_switchShowH5ChannelIdOn', 'ajaxInterceptor_rules', 'ShowH5Company_rules', 'ajaxInterceptor_ShowH5Company_rules_on']
     chrome.storage.local.get(fields, (result) => {
         // if (result.ajaxInterceptor_switchOn) {
         //   this.set('ajaxInterceptor_switchOn', result.ajaxInterceptor_switchOn, false);
@@ -49,3 +41,6 @@ if (chrome.storage) {
         document.getElementById('main')
     );
 }
+
+
+

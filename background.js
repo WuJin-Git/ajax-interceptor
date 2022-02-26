@@ -24,7 +24,7 @@
 // });
 
 // chrome.webRequest.onBeforeRequest.addListener(
-//   function(info) {   
+//   function(info) {
 //     console.log("Cat intercepted: " + info.url);
 //     // Redirect the lolcal request to a random loldog URL.
 //     chrome.tabs.sendMessage(details.tabId, details, function(response) {

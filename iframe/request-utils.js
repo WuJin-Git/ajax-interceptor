@@ -22,13 +22,13 @@ export default  function request(options = {}){
     delete options.url
     if(data){
         delete options.data
-        options.body = JSON.stringify({
-            data
-        })
+        options.body = JSON.stringify(data)
     }
     options.headers={
         'Authorization':Authorization,
-        // 'Content-Type':'application/json'
+    }
+    if (options.method === "post"){
+        options.headers['Content-Type'] = 'application/json;charset=UTF-8'
     }
     return fetch(commonUrl+url,options,{credentials: 'include'})
         .then(checkStatus)
