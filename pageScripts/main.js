@@ -84,7 +84,7 @@ let ajax_interceptor_qoweifjqon = {
         for (let attr in xhr) {
             if (attr === 'onreadystatechange') {
                 xhr.onreadystatechange = (...args) => {
-                    if (this.readyState == 4) {
+                    if (this.readyState === 4) {
                         // 请求成功
                         if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn) {
                             // 开启拦截
@@ -206,8 +206,8 @@ window.addEventListener("message", function (event) {
     if (data.type === 'ajaxInterceptor' && data.to === 'pageScript') {
         ajax_interceptor_qoweifjqon.settings[data.key] = data.value;
     }
-
-    if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn) {
+    // http://1.14.169.21:57 页面不做处理，不知为啥 页面发起的请求没有onreadystatechange方法
+    if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn && !window.location.href.startsWith('http://1.14.169.21:57/') ) {
         window.XMLHttpRequest = ajax_interceptor_qoweifjqon.myXHR;
         window.fetch = ajax_interceptor_qoweifjqon.myFetch;
     } else {
