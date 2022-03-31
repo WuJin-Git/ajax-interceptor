@@ -62,6 +62,7 @@ let ajax_interceptor_qoweifjqon = {
                 let matched = false;
                 if (switchOn && match) {
                     if (filterType === 'normal' && this.responseURL.indexOf(match) > -1) {
+                    // if (filterType === 'normal' && this.sourceRequestUrl.indexOf(match) > -1) {
                         matched = true;
                     } else if (filterType === 'regex' && this.responseURL.match(new RegExp(match, 'i'))) {
                         matched = true;
@@ -79,7 +80,6 @@ let ajax_interceptor_qoweifjqon = {
                 }
             })
         }
-
         const xhr = new ajax_interceptor_qoweifjqon.originalXHR;
         for (let attr in xhr) {
             if (attr === 'onreadystatechange') {
@@ -104,10 +104,41 @@ let ajax_interceptor_qoweifjqon = {
                     this.onload && this.onload.apply(this, args);
                 }
                 continue;
-            }
+            } else if (attr === 'open') {
+                if (xhr.open) {
+                    this[attr] = function () {
+                        const args = [].slice.call(arguments);
+                        this['sourceRequestMethod'] = args[0]
+                        this['sourceRequestUrl'] =args[1]
+                        //TODO 可实现单一网站 不请求实际接口的拦截，但是结果不太理想
+                        if ( args[1].indexOf('/policy/recentQuote') > -1 ){
+                            // args[0] = 'OPTIONS'
+                            // args[0] = 'GET'
+                            // args[1] = 'http://ybinsure.com/t/oauth/channel/query-inner-code/test-01'
+                            // args[1] = 'http://1.14.169.21:5099/api/channel/select_channel_company_list'
+                        }
+                        this.open && this.open.apply(xhr, args);
 
+                    }
+                }
+                continue
+            }
+            else if (attr === 'send') {
+                if (xhr.send) {
+                    this[attr] = function () {
+                        const args = [].slice.call(arguments)
+                        this.send && this.send.apply(xhr, args);
+                    }
+                }
+                continue
+            }
             if (typeof xhr[attr] === 'function') {
-                this[attr] = xhr[attr].bind(xhr);
+                this[attr] = xhr[attr].bind(xhr)
+                // this[attr] = function () {
+                //     const args = [].slice.call(arguments)
+                //     console.log(JSON.stringify(args))
+                //     this[attr] && this[attr].apply(xhr, args);
+                // }
             } else {
                 // responseText和response不是writeable的，但拦截时需要修改它，所以修改就存储在this[`_${attr}`]上
                 if (attr === 'responseText' || attr === 'response') {
@@ -157,10 +188,6 @@ let ajax_interceptor_qoweifjqon = {
             if (txt !== undefined) {
                 const stream = new ReadableStream({
                     start(controller) {
-                        // const bufView = new Uint8Array(new ArrayBuffer(txt.length));
-                        // for (var i = 0; i < txt.length; i++) {
-                        //   bufView[i] = txt.charCodeAt(i);
-                        // }
                         controller.enqueue(new TextEncoder().encode(txt));
                         controller.close();
                     }
@@ -192,7 +219,6 @@ let ajax_interceptor_qoweifjqon = {
                         proxy[key] = proxy[key].bind(newResponse);
                     }
                 }
-
                 return proxy;
             } else {
                 return response;
@@ -207,7 +233,7 @@ window.addEventListener("message", function (event) {
         ajax_interceptor_qoweifjqon.settings[data.key] = data.value;
     }
     // http://1.14.169.21:57 页面不做处理，不知为啥 页面发起的请求没有onreadystatechange方法
-    if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn && !window.location.href.startsWith('http://1.14.169.21:57/') ) {
+    if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn && !window.location.href.startsWith('http://1.14.169.21:57/')) {
         window.XMLHttpRequest = ajax_interceptor_qoweifjqon.myXHR;
         window.fetch = ajax_interceptor_qoweifjqon.myFetch;
     } else {
